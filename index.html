@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="./js/videocontext.js">     </script>
+
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+  </head>
+  <body>
+    <canvas id="canvas" width=400 height=230></canvas>
+    <canvas id="vis" width=400 height=20></canvas>
+    <canvas id="graph" widhth=400 height=100>
+    </canvas>
+    <p>
+        <button id="play-button">Play</button> <button id="pause-button">Pause</button>
+    </p>
+    <script type="text/javascript">
+      window.onload = function(){
+
+        var canvas = document.getElementById("canvas");
+        var vc = new VideoContext(canvas);
+
+        var gsNode = vc.createCompositingNode (VideoContext.DEFINITIONS.COLORTHRESHOLD);
+
+        //urls
+
+        //"/videos/team1.MOV"
+        //"/videos/team2.MOV"
+        //"/videos/team2.MOV"
+
+        var videoNode = vc.createVideoSourceNode( "/videos/introductions-fast.mp4", 540);
+        videoNode.start(0);
+        videoNode.stop(20);
+
+        var TeamNode1 = vc.createVideoSourceNode("/videos/team1.mp4");
+        TeamNode1.start(0);
+        TeamNode1.stop(6);
+
+        var TeamNode2 = vc.createVideoSourceNode("/videos/team2.mp4");
+        TeamNode2.start(6);
+        TeamNode2.stop(12);
+
+        var TeamNode3 = vc.createVideoSourceNode("/videos/team3.mp4");
+        TeamNode3.start(12);
+        TeamNode3.stop(20);
+
+        videoNode.connect(gsNode);
+        //videoNode2.connect(gsNode);
+
+        TeamNode1.connect(vc.destination);
+        TeamNode2.connect(vc.destination);
+        TeamNode3.connect(vc.destination);
+        gsNode.connect(vc.destination);
+
+      /*
+      * Create an interactive visualisation canvas.
+      */
+      var visualisationCanvas = document.getElementById("vis");
+      var graphCanvas = document.getElementById("graph");
+
+      VideoContext.visualiseVideoContextGraph(vc, graphCanvas);
+
+      //visualisationCanvas.height = 20;
+      //visualisationCanvas.width = 390;
+      //Setup up a render function so we can update the playhead position.
+      function render () {
+          //VideoCompositor.renderPlaylist(playlist, visualisationCanvas, videoCompositor.currentTime); 
+          VideoContext.visualiseVideoContextTimeline(vc, visualisationCanvas, vc.currentTime);
+          requestAnimationFrame(render);
+      }
+      requestAnimationFrame(render);
+      //catch mouse events to we can scrub through the timeline.
+      visualisationCanvas.addEventListener("mousedown", function(evt){
+          var x;
+          if (evt.x!== undefined){
+              x = evt.x - visualisationCanvas.offsetLeft;
+          }else{
+              //Fix for firefox
+              x = evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;          
+          }
+          var secondsPerPixel = vc.duration / visualisationCanvas.width;
+          vc.currentTime = secondsPerPixel*x;
+      }, false);
+
+      var playButton = document.getElementById("play-button");
+      var pauseButton = document.getElementById("pause-button");
+      playButton.onclick = function(){ vc.play(); };
+      pauseButton.onclick = function(){ vc.pause(); };
+
+      }
+    </script>
+  </body>
+</html>
+
+
+
