@@ -28,19 +28,19 @@
         //"/videos/team2.MOV"
         //"/videos/team2.MOV"
 
-        var videoNode = vc.createVideoSourceNode( "/videos/introductions-fast.mp4", 540);
+        var videoNode = vc.createVideoSourceNode( "./videos/introductions-fast.mp4", 540);
         videoNode.start(0);
         videoNode.stop(20);
 
-        var TeamNode1 = vc.createVideoSourceNode("/videos/team1.mp4");
+        var TeamNode1 = vc.createVideoSourceNode("./videos/team1.mp4");
         TeamNode1.start(0);
         TeamNode1.stop(6);
 
-        var TeamNode2 = vc.createVideoSourceNode("/videos/team2.mp4");
+        var TeamNode2 = vc.createVideoSourceNode("./videos/team2.mp4");
         TeamNode2.start(6);
         TeamNode2.stop(12);
 
-        var TeamNode3 = vc.createVideoSourceNode("/videos/team3.mp4");
+        var TeamNode3 = vc.createVideoSourceNode("./videos/team3.mp4");
         TeamNode3.start(12);
         TeamNode3.stop(20);
 
